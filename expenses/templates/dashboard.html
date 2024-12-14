@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div>
+    <br>
+
+    <h2>Expenses</h2>
+    
+    <br><br>
+
+    {% if daily_total %}
+    <h3>Daily Total: {{ daily_total }}</h3>
+    {% else  %}
+    <h3>Daily Total: 0</h3>
+    {% endif %}
+
+    {% if monthly_total %}
+    <h3>Monthly Total: {{ monthly_total }}</h3>
+    {% endif %}
+
+    {% if yearly_total %}
+    <h3>Yearly Total: {{ yearly_total }}</h3>
+    {% endif %}
+
+    <br>
+
+    <!-- <div class="">
+        <h4>Filter by category</h4>
+        <form method="get">
+            <select name="category" class="form-control">
+                <option value="day">Day</option>
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div> -->
+
+
+    <a href="{% url 'expenses:add_expense' %}" class="btn btn-primary">Add new Expense</a>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Note</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.category }}</td>
+                <td>{{ expense.date }}</td>
+                <td>{{ expense.notes }}</td>
+                <td>
+                    <a href="{% url 'expenses:edit_expense' expense.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'expenses:delete_expense' expense.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

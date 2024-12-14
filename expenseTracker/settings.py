@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,7 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'expenses',
     'accounts',
-    'crispy_forms'
+    'crispy_forms',
+    'crispy_bootstrap4'
+    
 ]
 
 MIDDLEWARE = [
@@ -71,18 +78,29 @@ TEMPLATES = [
     },
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 WSGI_APPLICATION = 'expenseTracker.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# database_url = os.environ.get('DATABASE_URL')
+
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {  'default': dj_database_url.config(
+        conn_max_age=500,
+        conn_health_checks=True,
+    ) }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+
 
 
 # Password validation
@@ -146,3 +164,12 @@ LOGGING = {
         },
     },
 }
+
+# Email settings for password reset
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'shihab9921@gmail.com'
+EMAIL_HOST_PASSWORD = 'chacha!@#$'
+DEFAULT_FROM_EMAIL = 'shihab9921@gmail.com'

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Monthly Category Breakdown -->
+        <div class="col-md-6">
+            <h2>Monthly Spending by Category</h2>
+            <canvas id="categoryChart"></canvas>
+        </div>
+        
+        <!-- Weekly Spending Trends -->
+        <div class="col-md-6">
+            <h2>Weekly Spending Trends</h2>
+            <canvas id="weeklySpendingChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Safely parse JSON data
+    const categoryLabels = JSON.parse('{{ category_labels|escapejs }}');
+    const categoryAmounts = JSON.parse('{{ category_amounts|escapejs }}');
+    const weeklyLabels = JSON.parse('{{ weekly_labels|escapejs }}');
+    const weeklyAmounts = JSON.parse('{{ weekly_amounts|escapejs }}');
+
+    // Category Pie Chart
+    const categoryChartEl = document.getElementById('categoryChart');
+    if (categoryChartEl && categoryLabels.length > 0) {
+        new Chart(categoryChartEl, {
+            type: 'pie',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryAmounts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    }
+
+    // Weekly Spending Line Chart
+    const weeklyChartEl = document.getElementById('weeklySpendingChart');
+    if (weeklyChartEl && weeklyLabels.length > 0) {
+        new Chart(weeklyChartEl, {
+            type: 'line',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: 'Daily Spending',
+                    data: weeklyAmounts,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount Spent'
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
